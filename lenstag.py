@@ -59,7 +59,7 @@ if "ini" not in args[0]:
     usage()
 
 cp = ConfigParser.SafeConfigParser()
-cp.read (args.pop(0))
+cp.read(args.pop(0))
 
 lensdata = dict(cp.items("Lens"))
 
