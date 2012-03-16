@@ -66,61 +66,61 @@ lensdata = dict(cp.items("Lens"))
 
 
 # Try to guess lens type if it's missing
-if 'type' not in lensdata:
+if 't' not in lensdata:
     if 'fl' in lensdata: 
-        lensdata['type'] = "Fixed"
-    elif (lensdata['fl_short'] == lensdata['fl_long']):
-        lensdata['type'] = "Fixed"
-        lensdata['fl'] = lensdata['fl_short']
+        lensdata['t'] = "Fixed"
+    elif (lensdata['fls'] == lensdata['fll']):
+        lensdata['t'] = "Fixed"
+        lensdata['fl'] = lensdata['fls']
     else:
-        lensdata['type'] = "Zoom"
+        lensdata['t'] = "Zoom"
 
 # Populate min/max fields based on type, abort if type is unknown
-if lensdata['type'] == "Fixed":
-    lensdata['fl_short'] = lensdata['fl']
-    lensdata['fl_long'] = lensdata['fl']
-    lensdata['aperture_max_short'] = lensdata['aperture_max']
-    lensdata['aperture_max_long'] = lensdata['aperture_max']
-elif lensdata['type'] == "Zoom":
-    lensdata['aperture_max'] = lensdata['aperture_max_short']
+if lensdata['t'] == "Fixed":
+    lensdata['fls'] = lensdata['fl']
+    lensdata['fll'] = lensdata['fl']
+    lensdata['amxs'] = lensdata['amx']
+    lensdata['amxl'] = lensdata['amx']
+elif lensdata['t'] == "Zoom":
+    lensdata['amx'] = lensdata['amxs']
 else:
     print 'Lens type must be "Fixed" or "Zoom"'
     usage()
 
 # Set no_iris flag if we should populate FNumber
-if 'no_iris' not in lensdata:
-    if (lensdata['aperture_min'] == lensdata['aperture_max']):
-        lensdata['no_iris'] = True
+if 'ni' not in lensdata:
+    if (lensdata['amn'] == lensdata['amx']):
+        lensdata['ni'] = True
     else:
-        lensdata['no_iris'] = False
+        lensdata['ni'] = False
 
-# Conversely, fill in missing aperture_min if no_iris
-if 'aperture_min' not in lensdata and lensdata['no_iris']:
-    lensdata['aperture_min'] = lensdata['aperture_max']
+# Conversely, fill in missing amn if no_iris
+if 'amn' not in lensdata and lensdata['ni']:
+    lensdata['amn'] = lensdata['amx']
     
 def set_tags(lens, tags, extension):
 
-    tags['LensModel']=lens['description']
+    tags['LensModel']=lens['d']
 
     if (extension == ".ORF"):
-        tags['MaxApertureValue'] = lens['aperture_max_short']
-        tags['MaxApertureAtMinFocal'] = lens['aperture_max_short']
-        tags['MaxApertureAtMaxFocal'] = lens['aperture_max_long']
-        tags['MinFocalLength'] = lens['fl_short']
-        tags['MaxFocalLength'] = lens['fl_long']
+        tags['MaxApertureValue'] = lens['amxs']
+        tags['MaxApertureAtMinFocal'] = lens['amxs']
+        tags['MaxApertureAtMaxFocal'] = lens['amxl']
+        tags['MinFocalLength'] = lens['fls']
+        tags['MaxFocalLength'] = lens['fll']
     else:
-        tags['MaxAperture'] = lens['aperture_max_short']
-        tags['MinAperture'] = lens['aperture_min']
-        tags['LongFocal'] = lens['fl_long']
-        tags['ShortFocal'] = lens['fl_short']
+        tags['MaxAperture'] = lens['amxs']
+        tags['MinAperture'] = lens['amn']
+        tags['LongFocal'] = lens['fll']
+        tags['ShortFocal'] = lens['fls']
 
     if (extension == ".CR2"):
         tags['FocalType'] = lens['type']
 
     if lens['no_iris'] or options.wide_open:
-        tags['FNumber'] = lens['aperture_max']
+        tags['FNumber'] = lens['amx']
         if (extension == ".CR2"):
-            tags['ApertureValue'] = lens['aperture_max']
+            tags['ApertureValue'] = lens['amx']
 
     if lens['type'] == "Fixed":
         tags['FocalLength'] = lens['fl']
