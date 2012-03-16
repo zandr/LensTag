@@ -115,14 +115,14 @@ def set_tags(lens, tags, extension):
         tags['ShortFocal'] = lens['fls']
 
     if (extension == ".CR2"):
-        tags['FocalType'] = lens['type']
+        tags['FocalType'] = lens['t']
 
-    if lens['no_iris'] or options.wide_open:
+    if lens['ni'] or options.wide_open:
         tags['FNumber'] = lens['amx']
         if (extension == ".CR2"):
             tags['ApertureValue'] = lens['amx']
 
-    if lens['type'] == "Fixed":
+    if lens['t'] == "Fixed":
         tags['FocalLength'] = lens['fl']
 
 filetypes = defaultdict(list)
